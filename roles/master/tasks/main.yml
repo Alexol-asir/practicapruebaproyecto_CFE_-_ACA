@@ -5,6 +5,12 @@
     dest: "{{ carpeta_cluster }}/docker-compose.yml"
     mode: "0644"
 
+- name: Copiar la configuración de Spark
+  ansible.builtin.template:
+    src: spark-defaults.conf.j2
+    dest: "{{ carpeta_cluster }}/spark-defaults.conf"
+    mode: "0644"
+
 - name: Levantar los contenedores del master
   community.docker.docker_compose_v2:
     project_src: "{{ carpeta_cluster }}"

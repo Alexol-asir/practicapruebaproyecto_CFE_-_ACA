@@ -7,3 +7,19 @@ services:
     env_file:
       - hadoop.env
     command: ["hdfs", "datanode"]
+
+  spark-worker:
+    image: {{ imagen_spark }}
+    container_name: spark-worker
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      SPARK_LOCAL_IP: "{{ nodos[inventory_hostname] }}"
+    command:
+      - /opt/spark/bin/spark-class
+      - org.apache.spark.deploy.worker.Worker
+      - --host
+      - "{{ nodos[inventory_hostname] }}"
+      - --webui-port
+      - "8081"
+      - spark://{{ ip_master }}:7077
