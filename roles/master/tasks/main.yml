@@ -5,6 +5,30 @@
     dest: "{{ carpeta_cluster }}/docker-compose.yml"
     mode: "0644"
 
+- name: Copiar la configuración por defecto de Spark
+  ansible.builtin.template:
+    src: spark-defaults.conf.j2
+    dest: "{{ carpeta_cluster }}/spark-defaults.conf"
+    owner: vagrant
+    group: vagrant
+    mode: "0644"
+
+- name: Crear la carpeta de datos de prueba
+  ansible.builtin.file:
+    path: "{{ carpeta_cluster }}/datos"
+    state: directory
+    owner: vagrant
+    group: vagrant
+    mode: "0755"
+
+- name: Copiar el fichero de prueba entrada.txt
+  ansible.builtin.copy:
+    src: entrada.txt
+    dest: "{{ carpeta_cluster }}/datos/entrada.txt"
+    owner: vagrant
+    group: vagrant
+    mode: "0644"  
+
 - name: Levantar los contenedores del master
   community.docker.docker_compose_v2:
     project_src: "{{ carpeta_cluster }}"
