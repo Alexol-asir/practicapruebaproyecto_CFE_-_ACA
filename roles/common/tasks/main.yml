@@ -41,3 +41,9 @@
     owner: vagrant
     group: vagrant
     mode: "0755"
+
+- name: Copiar la configuración de Hadoop
+  ansible.builtin.template:
+    src: hadoop.env.j2
+    dest: "{{ carpeta_cluster }}/hadoop.env"
+    mode: "0644"
