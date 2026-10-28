@@ -1,0 +1,6 @@
+spark.master                                spark://{{ ip_master }}:7077
+spark.driver.host                           {{ ip_master }}
+spark.hadoop.fs.defaultFS                   {{ url_hdfs }}
+spark.hadoop.dfs.replication                {{ replicas }}
+spark.scheduler.minRegisteredResourcesRatio 1.0
+spark.executor.memory                       512m

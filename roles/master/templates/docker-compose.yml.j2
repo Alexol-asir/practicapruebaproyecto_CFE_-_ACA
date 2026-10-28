@@ -8,3 +8,22 @@ services:
     environment:
       ENSURE_NAMENODE_DIR: /tmp/hadoop/dfs/name
     command: ["hdfs", "namenode"]
+
+  spark-master:
+    image: {{ imagen_spark }}
+    container_name: spark-master
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      SPARK_LOCAL_IP: "{{ ip_master }}"
+    volumes:
+      - "./spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro"
+    command:
+      - /opt/spark/bin/spark-class
+      - org.apache.spark.deploy.master.Master
+      - --host
+      - "{{ ip_master }}"
+      - --port
+      - "7077"
+      - --webui-port
+      - "8080"
