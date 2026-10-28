@@ -23,6 +23,18 @@
     dest: "{{ carpeta_cluster }}/datos/entrada.txt"
     mode: "0644"
 
+- name: Crear la carpeta de trabajos de Spark
+  ansible.builtin.file:
+    path: "{{ carpeta_cluster }}/trabajos"
+    state: directory
+    mode: "0755"
+
+- name: Copiar el wordcount
+  ansible.builtin.copy:
+    src: wordcount.py
+    dest: "{{ carpeta_cluster }}/trabajos/wordcount.py"
+    mode: "0644"
+
 - name: Levantar los contenedores del master
   community.docker.docker_compose_v2:
     project_src: "{{ carpeta_cluster }}"
