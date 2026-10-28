@@ -1,0 +1,6 @@
+---
+- name: Base común del clúster (las tres máquinas)
+  hosts: bigdata
+  become: true
+  roles:
+    - common

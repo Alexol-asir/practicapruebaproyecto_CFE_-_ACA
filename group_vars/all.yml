@@ -1,0 +1,11 @@
+---
+nodos:
+  master: 192.168.56.20
+  worker1: 192.168.56.21
+  worker2: 192.168.56.22
+ip_master: 192.168.56.20
+url_hdfs: "hdfs://192.168.56.20:8020"
+replicas: 2
+imagen_hadoop: apache/hadoop:3.3.6
+imagen_spark: apache/spark:3.5.1-python3
+carpeta_cluster: /opt/cluster

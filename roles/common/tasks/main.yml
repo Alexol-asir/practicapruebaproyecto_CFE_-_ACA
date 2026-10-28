@@ -1,0 +1,43 @@
+---
+- name: Instalar Docker y Docker Compose v2
+  ansible.builtin.apt:
+    name:
+      - docker.io
+      - docker-compose-v2
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Arrancar Docker y activarlo al inicio
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Añadir al usuario vagrant al grupo docker
+  ansible.builtin.user:
+    name: vagrant
+    groups: docker
+    append: true
+
+- name: Quitar la línea 127.0.x.1 que Vagrant pone para el nombre de la máquina
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '^127\.0\.[1-9]\.1\s'
+    state: absent
+
+- name: Poner los tres nodos con sus IPs privadas en /etc/hosts
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '^{{ item.value | regex_escape() }}\s'
+    line: "{{ item.value }} {{ item.key }}"
+    state: present
+  loop: "{{ nodos | dict2items }}"
+
+- name: Crear la carpeta del clúster
+  ansible.builtin.file:
+    path: "{{ carpeta_cluster }}"
+    state: directory
+    owner: vagrant
+    group: vagrant
+    mode: "0755"

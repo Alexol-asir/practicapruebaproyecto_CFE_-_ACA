@@ -77,6 +77,20 @@ Vagrant.configure("2") do |config|
 
       # Escritorio y teclado
       nodo.vm.provision "shell", inline: ESCRITORIO
+
+      # Ansible: solo se lanza desde el master (el último que se crea),
+      # y configura las tres máquinas de una pasada (limit = "all")
+      if nombre == "master"
+        nodo.vm.provision "ansible" do |ansible|
+          ansible.playbook = "site.yml"
+          ansible.limit    = "all"
+          ansible.groups   = {
+            "masters"          => ["master"],
+            "workers"          => ["worker1", "worker2"],
+            "bigdata:children" => ["masters", "workers"]
+          }
+        end
+      end
     end
   end
 end
