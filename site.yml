@@ -4,3 +4,9 @@
   become: true
   roles:
     - common
+
+- name: Nodo master (NameNode)
+  hosts: masters
+  become: true
+  roles:
+    - master

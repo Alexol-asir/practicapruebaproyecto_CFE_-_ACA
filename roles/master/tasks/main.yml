@@ -1,0 +1,11 @@
+---
+- name: Generar el docker-compose del master
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ carpeta_cluster }}/docker-compose.yml"
+    mode: "0644"
+
+- name: Levantar los contenedores del master
+  community.docker.docker_compose_v2:
+    project_src: "{{ carpeta_cluster }}"
+    state: present

@@ -1,0 +1,10 @@
+services:
+  namenode:
+    image: {{ imagen_hadoop }}
+    container_name: namenode
+    network_mode: host
+    restart: unless-stopped
+    env_file: hadoop.env
+    environment:
+      ENSURE_NAMENODE_DIR: /tmp/hadoop/dfs/name
+    command: ["hdfs", "namenode"]
