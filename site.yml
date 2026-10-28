@@ -10,3 +10,9 @@
   become: true
   roles:
     - master
+
+- name: Configuración de los workers (DataNode)
+  hosts: workers
+  become: true
+  roles:
+    - worker

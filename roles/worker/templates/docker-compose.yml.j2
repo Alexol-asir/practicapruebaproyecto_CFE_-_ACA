@@ -1,0 +1,9 @@
+services:
+  datanode:
+    image: {{ imagen_hadoop }}
+    container_name: datanode
+    network_mode: host
+    restart: unless-stopped
+    env_file:
+      - hadoop.env
+    command: ["hdfs", "datanode"]
