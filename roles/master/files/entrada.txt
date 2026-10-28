@@ -1,0 +1,8 @@
+Spark reparte el trabajo entre los workers del cluster
+HDFS guarda cada fichero en bloques y los replica en dos DataNodes
+El NameNode sabe donde esta cada bloque y el DataNode guarda los datos
+Si un worker se cae los datos siguen disponibles en el otro DataNode
+Spark lee el fichero de HDFS cuenta las palabras y guarda el resultado en HDFS
+Cada worker procesa su trozo del fichero y el driver junta los resultados
+HDFS y Spark trabajan juntos en el cluster de la practica
+Los datos se replican los trabajos se reparten
