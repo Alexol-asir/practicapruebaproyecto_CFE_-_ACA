@@ -80,5 +80,3 @@
   community.docker.docker_compose_v2:
     project_src: "{{ carpeta_monitorizacion }}"
     state: present
-
-red_monitorizacion: 10.20.30.0/24
