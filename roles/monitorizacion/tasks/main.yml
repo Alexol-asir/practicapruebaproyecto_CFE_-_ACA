@@ -33,6 +33,13 @@
     mode: "0644"
   notify: Reiniciar prometheus
 
+- name: Copiar las reglas de alerta de Prometheus
+  ansible.builtin.copy:
+    src: reglas/alertas.yml
+    dest: "{{ carpeta_monitorizacion }}/prometheus/reglas/alertas.yml"
+    mode: "0644"
+  notify: Reiniciar prometheus
+
 - name: Generar la configuración de Alertmanager (envío a Telegram)
   ansible.builtin.template:
     src: alertmanager.yml.j2
