@@ -64,7 +64,12 @@ services:
       - prometheus
 
 networks:
+  # Rango fijo: si Docker elige uno de 172.16.0.0/12 puede coincidir con la red de WSL
+  # desde la que Vagrant entra por SSH, y el master deja de responder a Vagrant.
   monitorizacion:
+    ipam:
+      config:
+        - subnet: {{ red_monitorizacion }}
 
 volumes:
   prometheus-datos:

@@ -17,3 +17,5 @@ puerto_spark_master_web: 8080
 puerto_spark_worker_web: 8081
 
 retencion_prometheus: 60d
+
+red_monitorizacion: 10.20.30.0/24
