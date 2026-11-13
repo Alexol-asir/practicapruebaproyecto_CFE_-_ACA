@@ -16,3 +16,15 @@
   become: true
   roles:
     - worker
+
+- name: Exportadores de métricas (las tres máquinas)
+  hosts: bigdata
+  become: true
+  roles:
+    - exportadores
+
+- name: Monitorización (Prometheus, Grafana y Alertmanager en el master)
+  hosts: masters
+  become: true
+  roles:
+    - monitorizacion

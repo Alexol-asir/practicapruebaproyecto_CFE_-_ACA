@@ -1,0 +1,4 @@
+---
+- name: Rol monitorizacion
+  ansible.builtin.debug:
+    msg: "Rol monitorizacion aplicado"

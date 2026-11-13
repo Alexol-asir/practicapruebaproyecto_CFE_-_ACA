@@ -53,10 +53,11 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/vagrant", disabled: true
 
   # Los workers van primero para que el master se cree el último
+  # El master tiene 4 GB porque en la Práctica 2 lleva además Prometheus, Grafana y Alertmanager
   nodos = {
-    "worker1" => { ip: "192.168.56.21", cpus: 1 },
-    "worker2" => { ip: "192.168.56.22", cpus: 1 },
-    "master"  => { ip: "192.168.56.20", cpus: 2 }
+    "worker1" => { ip: "192.168.56.21", cpus: 1, ram: 2560 },
+    "worker2" => { ip: "192.168.56.22", cpus: 1, ram: 2560 },
+    "master"  => { ip: "192.168.56.20", cpus: 2, ram: 4096 }
   }
 
   nodos.each do |nombre, datos|
@@ -66,7 +67,7 @@ Vagrant.configure("2") do |config|
 
       nodo.vm.provider "virtualbox" do |vb|
         vb.name   = "bigdata-#{nombre}"
-        vb.memory = 2560
+        vb.memory = datos[:ram]
         vb.cpus   = datos[:cpus]
         vb.gui    = true    # abre la ventana con el escritorio
         vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga", "--vram", "64"]

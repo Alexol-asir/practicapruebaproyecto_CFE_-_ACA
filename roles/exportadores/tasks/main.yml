@@ -1,0 +1,4 @@
+---
+- name: Rol exportadores
+  ansible.builtin.debug:
+    msg: "Rol exportadores aplicado"
