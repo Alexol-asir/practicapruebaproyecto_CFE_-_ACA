@@ -1,0 +1,42 @@
+groups:
+  - name: cluster-big-data
+    rules:
+      - alert: ObjetivoCaido
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critica
+        annotations:
+          summary: "{{ $labels.job }} no responde en {{ $labels.nodo }}"
+          description: "Prometheus lleva más de 1 minuto sin poder leer {{ $labels.instance }} (job {{ $labels.job }})."
+          comprobar_primero: "Si caen todos los objetivos de {{ $labels.nodo }}, comprobar que la VM está encendida (vagrant status). Si cae solo uno, comprobar el contenedor en esa VM (docker ps -a y docker logs)."
+
+      - alert: HDFSFaltanDataNodes
+        expr: hdfs_datanodes_vivos < 2
+        for: 1m
+        labels:
+          severity: critica
+        annotations:
+          summary: "HDFS tiene {{ $value }} DataNodes vivos de 2"
+          description: "El NameNode cuenta menos DataNodes vivos de los esperados. Los bloques de los nodos perdidos se quedan con una sola copia."
+          comprobar_primero: "Ver en http://192.168.56.20:9870 (pestaña Datanodes) cuál falta y comprobar en ese worker la VM y el contenedor datanode (docker ps -a)."
+
+      - alert: HDFSBloquesSubreplicados
+        expr: hdfs_bloques_subreplicados > 0
+        for: 5m
+        labels:
+          severity: aviso
+        annotations:
+          summary: "HDFS tiene {{ $value }} bloques sub-replicados"
+          description: "Hay bloques con menos copias de las configuradas desde hace más de 5 minutos."
+          comprobar_primero: "Comprobar que los dos DataNodes están vivos. Si lo están, ver los bloques afectados con hdfs fsck / desde el contenedor namenode."
+
+      - alert: DiscoLlenoEn24h
+        expr: predict_linear(node_filesystem_avail_bytes{mountpoint="/", fstype!~"tmpfs|overlay"}[6h], 24 * 3600) < 0
+        for: 30m
+        labels:
+          severity: aviso
+        annotations:
+          summary: "El disco de {{ $labels.nodo }} se llenará en menos de 24 h"
+          description: "Según la tendencia de las últimas 6 horas, el espacio libre de / en {{ $labels.nodo }} llegará a cero en menos de 24 horas."
+          comprobar_primero: "Ver qué ocupa más en {{ $labels.nodo }} (df -h y du -sh /var/lib/docker /tmp/hadoop) y si crecen los datos de HDFS o los registros de los contenedores."
