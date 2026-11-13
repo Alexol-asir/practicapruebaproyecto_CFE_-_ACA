@@ -1,4 +1,21 @@
 ---
-- name: Rol exportadores
-  ansible.builtin.debug:
-    msg: "Rol exportadores aplicado"
+- name: Crear la carpeta de los exportadores
+  ansible.builtin.file:
+    path: "{{ carpeta_exportadores }}"
+    state: directory
+    owner: vagrant
+    group: vagrant
+    mode: "0755"
+
+- name: Copiar el docker-compose de los exportadores
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ carpeta_exportadores }}/docker-compose.yml"
+    owner: vagrant
+    group: vagrant
+    mode: "0644"
+
+- name: Levantar node_exporter y cAdvisor
+  community.docker.docker_compose_v2:
+    project_src: "{{ carpeta_exportadores }}"
+    state: present

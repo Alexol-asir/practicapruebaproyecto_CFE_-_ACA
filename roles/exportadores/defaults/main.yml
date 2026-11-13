@@ -1,0 +1,6 @@
+---
+imagen_node_exporter: "prom/node-exporter:v1.12.1"
+imagen_cadvisor: "ghcr.io/google/cadvisor:v0.60.6"
+puerto_node_exporter: 9100
+puerto_cadvisor: 8085
+carpeta_exportadores: /opt/exportadores
