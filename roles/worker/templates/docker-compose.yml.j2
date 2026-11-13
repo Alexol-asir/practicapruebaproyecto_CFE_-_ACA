@@ -15,6 +15,9 @@ services:
     restart: unless-stopped
     environment:
       SPARK_LOCAL_IP: "{{ nodos[inventory_hostname] }}"
+      SPARK_WORKER_OPTS: "-Dspark.metrics.conf=/opt/spark/conf/metrics.properties"
+    volumes:
+      - "./metrics.properties:/opt/spark/conf/metrics.properties:ro"
     command:
       - /opt/spark/bin/spark-class
       - org.apache.spark.deploy.worker.Worker

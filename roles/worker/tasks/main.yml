@@ -7,6 +7,14 @@
     group: vagrant
     mode: "0644"
 
+- name: Copiar metrics.properties de Spark
+  ansible.builtin.copy:
+    src: metrics.properties
+    dest: "{{ carpeta_cluster }}/metrics.properties"
+    owner: vagrant
+    group: vagrant
+    mode: "0644"
+
 - name: Levantar el contenedor datanode
   community.docker.docker_compose_v2:
     project_src: "{{ carpeta_cluster }}"

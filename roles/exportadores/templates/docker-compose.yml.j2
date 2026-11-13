@@ -1,0 +1,31 @@
+services:
+  node-exporter:
+    image: {{ imagen_node_exporter }}
+    container_name: node-exporter
+    network_mode: host
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - "/:/host:ro,rslave"
+    command:
+      - "--path.rootfs=/host"
+      - "--web.listen-address=:{{ puerto_node_exporter }}"
+
+  cadvisor:
+    image: {{ imagen_cadvisor }}
+    container_name: cadvisor
+    network_mode: host
+    privileged: true
+    restart: unless-stopped
+    devices:
+      - /dev/kmsg
+    volumes:
+      - "/:/rootfs:ro"
+      - "/var/run:/var/run:ro"
+      - "/sys:/sys:ro"
+      - "/var/lib/docker/:/var/lib/docker:ro"
+      - "/dev/disk/:/dev/disk:ro"
+    command:
+      - "--port={{ puerto_cadvisor }}"
+      - "--docker_only=true"
+      - "--housekeeping_interval=10s"
