@@ -1,0 +1,28 @@
+---
+- name: Reiniciar prometheus
+  community.docker.docker_compose_v2:
+    project_src: "{{ carpeta_monitorizacion }}"
+    services:
+      - prometheus
+    state: restarted
+
+- name: Reiniciar alertmanager
+  community.docker.docker_compose_v2:
+    project_src: "{{ carpeta_monitorizacion }}"
+    services:
+      - alertmanager
+    state: restarted
+
+- name: Reiniciar json-exporter
+  community.docker.docker_compose_v2:
+    project_src: "{{ carpeta_monitorizacion }}"
+    services:
+      - json-exporter
+    state: restarted
+
+- name: Reiniciar grafana
+  community.docker.docker_compose_v2:
+    project_src: "{{ carpeta_monitorizacion }}"
+    services:
+      - grafana
+    state: restarted

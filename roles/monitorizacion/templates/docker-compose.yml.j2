@@ -1,0 +1,72 @@
+services:
+  prometheus:
+    image: {{ imagen_prometheus }}
+    container_name: prometheus
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time={{ retencion_prometheus }}
+      - --web.enable-lifecycle
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/reglas:/etc/prometheus/reglas:ro
+      - prometheus-datos:/prometheus
+    ports:
+      - "{{ puerto_prometheus }}:9090"
+    networks:
+      - monitorizacion
+
+  alertmanager:
+    image: {{ imagen_alertmanager }}
+    container_name: alertmanager
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --storage.path=/alertmanager
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager-datos:/alertmanager
+    ports:
+      - "{{ puerto_alertmanager }}:9093"
+    networks:
+      - monitorizacion
+
+  json-exporter:
+    image: {{ imagen_json_exporter }}
+    container_name: json-exporter
+    restart: unless-stopped
+    command:
+      - --config.file=/config.yml
+    volumes:
+      - ./json-exporter/config.yml:/config.yml:ro
+    ports:
+      - "{{ puerto_json_exporter }}:7979"
+    networks:
+      - monitorizacion
+
+  grafana:
+    image: {{ imagen_grafana }}
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: "{{ grafana_admin_password }}"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/etc/grafana/dashboards:ro
+      - grafana-datos:/var/lib/grafana
+    ports:
+      - "{{ puerto_grafana }}:3000"
+    networks:
+      - monitorizacion
+    depends_on:
+      - prometheus
+
+networks:
+  monitorizacion:
+
+volumes:
+  prometheus-datos:
+  alertmanager-datos:
+  grafana-datos:

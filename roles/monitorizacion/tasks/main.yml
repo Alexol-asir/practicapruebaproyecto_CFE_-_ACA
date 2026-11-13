@@ -1,4 +1,82 @@
 ---
-- name: Rol monitorizacion
-  ansible.builtin.debug:
-    msg: "Rol monitorizacion aplicado"
+- name: Comprobar que existe secretos.yml
+  ansible.builtin.assert:
+    that:
+      - lookup('ansible.builtin.fileglob', playbook_dir ~ '/secretos.yml') | length > 0
+    fail_msg: "Falta secretos.yml en la carpeta del proyecto. Copiar secretos.yml.ejemplo como secretos.yml y rellenarlo."
+    quiet: true
+
+- name: Cargar los secretos (Telegram y Grafana)
+  ansible.builtin.include_vars:
+    file: "{{ playbook_dir }}/secretos.yml"
+  no_log: true
+
+- name: Crear las carpetas de la monitorización
+  ansible.builtin.file:
+    path: "{{ carpeta_monitorizacion }}/{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - ""
+    - prometheus
+    - prometheus/reglas
+    - alertmanager
+    - json-exporter
+    - grafana/provisioning/datasources
+    - grafana/provisioning/dashboards
+    - grafana/dashboards
+
+- name: Generar la configuración de Prometheus
+  ansible.builtin.template:
+    src: prometheus.yml.j2
+    dest: "{{ carpeta_monitorizacion }}/prometheus/prometheus.yml"
+    mode: "0644"
+  notify: Reiniciar prometheus
+
+- name: Generar la configuración de Alertmanager (envío a Telegram)
+  ansible.builtin.template:
+    src: alertmanager.yml.j2
+    dest: "{{ carpeta_monitorizacion }}/alertmanager/alertmanager.yml"
+    mode: "0644"
+  no_log: true
+  notify: Reiniciar alertmanager
+
+- name: Copiar la configuración del json-exporter (métricas de HDFS)
+  ansible.builtin.copy:
+    src: json-exporter.yml
+    dest: "{{ carpeta_monitorizacion }}/json-exporter/config.yml"
+    mode: "0644"
+  notify: Reiniciar json-exporter
+
+- name: Copiar el origen de datos de Grafana
+  ansible.builtin.copy:
+    src: grafana/datasource.yml
+    dest: "{{ carpeta_monitorizacion }}/grafana/provisioning/datasources/datasource.yml"
+    mode: "0644"
+  notify: Reiniciar grafana
+
+- name: Copiar el proveedor de paneles de Grafana
+  ansible.builtin.copy:
+    src: grafana/dashboards.yml
+    dest: "{{ carpeta_monitorizacion }}/grafana/provisioning/dashboards/dashboards.yml"
+    mode: "0644"
+  notify: Reiniciar grafana
+
+- name: Copiar los paneles de Grafana
+  ansible.builtin.copy:
+    src: dashboards/
+    dest: "{{ carpeta_monitorizacion }}/grafana/dashboards/"
+    mode: "0644"
+    directory_mode: "0755"
+
+- name: Generar el docker-compose de la monitorización
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ carpeta_monitorizacion }}/docker-compose.yml"
+    mode: "0600"
+  no_log: true
+
+- name: Levantar Prometheus, Grafana, Alertmanager y json-exporter
+  community.docker.docker_compose_v2:
+    project_src: "{{ carpeta_monitorizacion }}"
+    state: present

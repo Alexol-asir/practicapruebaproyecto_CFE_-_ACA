@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: cluster-big-data
+    type: file
+    folder: ""
+    disableDeletion: false
+    allowUiUpdates: false
+    updateIntervalSeconds: 30
+    options:
+      path: /etc/grafana/dashboards

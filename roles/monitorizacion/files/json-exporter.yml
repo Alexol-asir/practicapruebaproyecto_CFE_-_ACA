@@ -1,0 +1,27 @@
+modules:
+  default:
+    metrics:
+      - name: hdfs_datanodes_vivos
+        help: DataNodes vivos según el NameNode
+        path: "{.beans[0].NumLiveDataNodes}"
+        valuetype: gauge
+      - name: hdfs_datanodes_muertos
+        help: DataNodes que el NameNode da por muertos
+        path: "{.beans[0].NumDeadDataNodes}"
+        valuetype: gauge
+      - name: hdfs_capacidad_total_bytes
+        help: Capacidad total de HDFS en bytes
+        path: "{.beans[0].CapacityTotal}"
+        valuetype: gauge
+      - name: hdfs_capacidad_usada_bytes
+        help: Capacidad usada de HDFS en bytes
+        path: "{.beans[0].CapacityUsed}"
+        valuetype: gauge
+      - name: hdfs_capacidad_libre_bytes
+        help: Capacidad libre de HDFS en bytes
+        path: "{.beans[0].CapacityRemaining}"
+        valuetype: gauge
+      - name: hdfs_bloques_subreplicados
+        help: Bloques con menos copias de las configuradas
+        path: "{.beans[0].UnderReplicatedBlocks}"
+        valuetype: gauge
