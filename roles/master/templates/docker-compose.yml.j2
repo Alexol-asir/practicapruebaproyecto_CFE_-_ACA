@@ -16,8 +16,10 @@ services:
     restart: unless-stopped
     environment:
       SPARK_LOCAL_IP: "{{ ip_master }}"
+      SPARK_MASTER_OPTS: "-Dspark.metrics.conf=/opt/spark/conf/metrics.properties"
     volumes:
       - "./spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro"
+      - "./metrics.properties:/opt/spark/conf/metrics.properties:ro"
       - "./trabajos:/opt/spark/work-dir/trabajos:ro"
     command:
       - /opt/spark/bin/spark-class

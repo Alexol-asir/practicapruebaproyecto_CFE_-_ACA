@@ -11,6 +11,12 @@
     dest: "{{ carpeta_cluster }}/spark-defaults.conf"
     mode: "0644"
 
+- name: Copiar metrics.properties de Spark
+  ansible.builtin.copy:
+    src: metrics.properties
+    dest: "{{ carpeta_cluster }}/metrics.properties"
+    mode: "0644"
+
 - name: Crear la carpeta de datos
   ansible.builtin.file:
     path: "{{ carpeta_cluster }}/datos"
